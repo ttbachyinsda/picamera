@@ -3,12 +3,12 @@ import urllib2
 import time
 key = "_sZX_WAjR-wQFZ8CYYUmqfntf9v6kmyv"
 secret = "qYTkqwjWKr5zdVDRfYrDDaITgm3Wur0a"
-filepath = r"d:/a.jpg"
-filepathface = r"d:/aa.jpg"
-filepath1 = r"d:/a.jpg"
-filepath2 = r"d:/b.jpg"
-filepath3 = r"d:/cc.jpg"
-filepath4 = r"d:/bb.jpg"
+# filepath = r"d:/a.jpg"
+# filepathface = r"d:/aa.jpg"
+# filepath1 = r"d:/a.jpg"
+# filepath2 = r"d:/b.jpg"
+# filepath3 = r"d:/cc.jpg"
+# filepath4 = r"d:/bb.jpg"
 def detect_api(key, secret, filepath):
     http_url = 'https://api-cn.faceplusplus.com/facepp/v3/detect'
     boundary = '----------%s' % hex(int(time.time() * 1000))
@@ -241,7 +241,7 @@ def getdetail(key, secret, setname):
 # print compare_api(key,secret,filepath1,filepath2)
 # print create_set(key, secret, 'testset')
 
-print search(key,secret,filepath2,'testset')
-print search(key,secret,filepath3,'testset')
-print search(key,secret,filepath4,'testset')
-print getdetail(key,secret,'testset')
+# print search(key,secret,filepath2,'testset')
+# print search(key,secret,filepath3,'testset')
+# print search(key,secret,filepath4,'testset')
+# print getdetail(key,secret,'testset')
