@@ -9,3 +9,4 @@ def clearfiles():
         else:
             if 'result' in element and '.txt' in element:
                 os.remove(path + '/' + element)
+clearfiles()

@@ -9,7 +9,8 @@ while True:
     start_time = time.time()
     filename = '/home/pi/new/detect%s.jpg'%start_time
     camera.capture(filename)
-    res = facetest.detect_api(facetest.key, facetest.secret, filename)
+    #res = facetest.detect_api(facetest.key, facetest.secret, filename)
+    res = facetest.search(facetest.key, facetest.secret, filename, 'testset')
     output = open('/home/pi/new/result%s.txt'%start_time,'w')
     output.write(res)
     output.close()
