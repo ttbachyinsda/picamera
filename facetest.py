@@ -1,10 +1,10 @@
 import json
 import urllib2
 import time
-key = "_sZX_WAjR-wQFZ8CYYUmqfntf9v6kmyv"
-secret = "qYTkqwjWKr5zdVDRfYrDDaITgm3Wur0a"
-# filepath = r"d:/a.jpg"
-# filepathface = r"d:/aa.jpg"
+key = "rqm-AimGRLABYcAleZ3NOQB--WUlG-kl"
+secret = "k8M75QQkdp_XXlDpMjnSLYm8VsjydGlZ"
+filepath = r"d:/a.jpg"
+filepathface = r"d:/aa.jpg"
 # filepath1 = r"d:/a.jpg"
 # filepath2 = r"d:/b.jpg"
 # filepath3 = r"d:/cc.jpg"
@@ -139,6 +139,41 @@ def addface(key,secret,token,setname):
     data.append('--%s' % boundary)
     data.append('Content-Disposition: form-data; name="%s"\r\n' % 'face_tokens')
     data.append(token)
+    data.append('--%s--\r\n' % boundary)
+    http_body = '\r\n'.join(data)
+    # buld http request
+    req = urllib2.Request(http_url)
+    # header
+    req.add_header('Content-Type', 'multipart/form-data; boundary=%s' % boundary)
+    req.add_data(http_body)
+    try:
+        # req.add_header('Referer','http://remotserver.com/')
+        # post data to server
+        resp = urllib2.urlopen(req, timeout=5)
+        # get response
+        qrcont = resp.read()
+        return qrcont
+
+    except urllib2.HTTPError as e:
+        return e.read()
+
+
+def removeface(key,secret,setname):
+    http_url = 'https://api-cn.faceplusplus.com/facepp/v3/faceset/addface'
+    boundary = '----------%s' % hex(int(time.time() * 1000))
+    data = []
+    data.append('--%s' % boundary)
+    data.append('Content-Disposition: form-data; name="%s"\r\n' % 'api_key')
+    data.append(key)
+    data.append('--%s' % boundary)
+    data.append('Content-Disposition: form-data; name="%s"\r\n' % 'api_secret')
+    data.append(secret)
+    data.append('--%s' % boundary)
+    data.append('Content-Disposition: form-data; name="%s"\r\n' % 'outer_id')
+    data.append(setname)
+    data.append('--%s' % boundary)
+    data.append('Content-Disposition: form-data; name="%s"\r\n' % 'face_tokens')
+    data.append('RemoveAllFaceTokens')
     data.append('--%s--\r\n' % boundary)
     http_body = '\r\n'.join(data)
     # buld http request

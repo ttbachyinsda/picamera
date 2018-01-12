@@ -9,4 +9,9 @@ def clearfiles():
         else:
             if 'result' in element and '.txt' in element:
                 os.remove(path + '/' + element)
-clearfiles()
+# clearfiles()
+import time
+c = time.time()
+time.sleep(10)
+d = time.time()
+print d-c, ((d-c)>10)
