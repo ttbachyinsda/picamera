@@ -1,3 +1,4 @@
+#coding=utf-8
 import time
 from picamera import PiCamera
 import facetest
@@ -6,9 +7,15 @@ import os
 import random
 import json
 import zipfile
-
+import sys
+reload(sys)
+sys.setdefaultencoding('utf8')
 lock = 0
 
+filetest = open('facedata.txt', 'w')
+fa = [('FACE', 'GuoFangZe')]
+filetest.write(json.dumps(fa))
+filetest.close()
 def getfacedata():
     file1 = open('facedata.txt', 'r')
     c = file1.read()
@@ -38,8 +45,8 @@ def toreport(start_time, filename):
         while lock == 1:
             3+2
         lock = 1
-        resultfile = open('result.txt', 'w+')
-        resultfile.write(str(res))
+        resultfile = open('result.txt', 'a')
+        resultfile.write(json.dumps(res))
         resultfile.write('\n')
         resultfile.close()
         lock = 0
@@ -56,13 +63,15 @@ def generatemarkdown():
     lock = 1
     resfile = open('result.txt', 'r')
     for line in resfile.readlines():
-        st = json.loads(line)
+        st = json.loads(line.strip())
         if st['Face'] == []:
             filename = st['Filepath']
             shutil.copyfile(prefix2 + filename, './'+nowtime+'/'+filename)
+            print filename, markdownstr
             markdownstr = markdownstr + "未知人脸：!["+filename+"]("+filename+")\n\n"
         else:
             filename = st['Filepath']
+            print filename, markdownstr
             shutil.copyfile(prefix2 + filename, './' + nowtime + '/' + filename)
             markdownstr = markdownstr + "已知人脸："+ st['Face'][0][1]+"![" + filename + "](" + filename + ")\n\n"
     lock = 0
