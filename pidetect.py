@@ -65,14 +65,17 @@ def generatemarkdown():
     resfile = open('result.txt', 'r')
     for line in resfile.readlines():
         st = json.loads(line.strip())
+        timestamp = st['Time']
+        t = time.localtime(timestamp)
+        timeStr = time.strftime('%Y-%m-%d %H:%M:%S', t)
         if st['Face'] == []:
             filename = st['Filepath']
             shutil.copyfile(prefix2 + filename, './'+nowtime+'/'+filename)
-            markdownstr = markdownstr + "未知人脸：!["+filename+"]("+filename+")\n\n"
+            markdownstr = markdownstr + timeStr+ " 未知人脸：!["+filename+"]("+filename+")\n\n"
         else:
             filename = st['Filepath']
             shutil.copyfile(prefix2 + filename, './' + nowtime + '/' + filename)
-            markdownstr = markdownstr + "已知人脸："+ st['Face'][0][1]+"![" + filename + "](" + filename + ")\n\n"
+            markdownstr = markdownstr + timeStr+ " 已知人脸："+ st['Face'][0][1]+"![" + filename + "](" + filename + ")\n\n"
 
     file1 = open("./"+nowtime+"/report.md", 'w')
     file1.write(markdownstr)

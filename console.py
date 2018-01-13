@@ -1,6 +1,8 @@
+#coding=utf-8
 from sys import stdin
 import facetest
 import json
+import requests
 
 
 class switch(object):
@@ -25,15 +27,20 @@ class switch(object):
 
 
 def gethelp():
-    print "help"
+    print "通过getreport获取人脸检测报告"
+    print "输入quit来退出"
 
 
 def getreport():
-    print 'getreport'
+    c = requests.get("http://192.168.199.114:8080/report").content
+    r = requests.get("http://192.168.199.114:8080/getzip/"+c)
+    with open(""+c+".zip", "wb") as code:
+        code.write(r.content)
+    print "已获取人脸识别的报告，文件已保存至当前目录的"+c+".zip文件，请解压后查看"
 
 
 def postfacedetail(facetoken, facename):
-    print facetoken, facename
+    print "已添加人脸"+facename
 
 
 if __name__ == '__main__':
