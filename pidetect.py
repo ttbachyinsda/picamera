@@ -113,6 +113,3 @@ if __name__ == '__main__':
         toreport(start_time, filename)
 
         # generatemarkdown()
-        if (start_time - timelist[0] > 60):
-            timelist.remove(0)
-            detectfilenamelist.remove(0)
