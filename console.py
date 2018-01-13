@@ -32,8 +32,8 @@ def gethelp():
 
 
 def getreport():
-    c = requests.get("http://192.168.199.114:8080/report").content
-    r = requests.get("http://192.168.199.114:8080/getzip/"+c)
+    c = requests.get("http://192.168.137.88:8080/report").content
+    r = requests.get("http://192.168.137.88:8080/getzip/"+c)
     with open(""+c+".zip", "wb") as code:
         code.write(r.content)
     print "已获取人脸识别的报告，文件已保存至当前目录的"+c+".zip文件，请解压后查看"
