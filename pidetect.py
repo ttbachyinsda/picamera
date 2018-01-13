@@ -40,7 +40,7 @@ def toreport(start_time, filename):
         prefix2 = '/home/pi/old/'
         shutil.copyfile(prefix1+filename, prefix2+filename)
         res = {'Face': [], 'Report': 'WrongFace', 'Filepath': filename, 'Time': start_time}
-        print res, start_time, filename
+        #print res, start_time, filename
     else:
         if random.random() > 0.8:
             facedata = getfacedata()
@@ -48,7 +48,7 @@ def toreport(start_time, filename):
             prefix2 = '/home/pi/old/'
             shutil.copyfile(prefix1 + filename, prefix2 + filename)
             res = {'Face': [facedata[0]], 'Report': 'RightFace', 'Filepath': filename, 'Time': start_time}
-            print res, start_time, filename
+            #print res, start_time, filename
     if res != {}:
         resultfile = open('result.txt', 'a')
         resultfile.write(json.dumps(res))
@@ -68,6 +68,7 @@ def generatemarkdown():
         timestamp = st['Time']
         t = time.localtime(timestamp)
         timeStr = time.strftime('%Y-%m-%d %H:%M:%S', t)
+        print timestamp, timeStr
         if st['Face'] == []:
             filename = st['Filepath']
             shutil.copyfile(prefix2 + filename, './'+nowtime+'/'+filename)
