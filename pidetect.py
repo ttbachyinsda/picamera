@@ -87,29 +87,30 @@ def generatemarkdown():
     return nowtime
 
 
-camera = PiCamera()
-camera.resolution=(640,480)
-time.sleep(2)
-camera.start_preview()
-detectfilenamelist = []
-timelist = []
-while True:
-    flag = open('flag.txt', 'r')
-    c = flag.read()
-    flag.close()
-    if c == 'on':
-        while True:
-            prefix = '/home/pi/new/'
-            start_time = time.time()
-            filename = '%s.jpg'%start_time
-            camera.capture(prefix + filename)
-            detectfilenamelist.append(filename)
-            timelist.append(start_time)
+if __name__ == '__main__':
+    camera = PiCamera()
+    camera.resolution = (640, 480)
+    time.sleep(2)
+    camera.start_preview()
+    detectfilenamelist = []
+    timelist = []
+    while True:
+        flag = open('flag.txt', 'r')
+        c = flag.read()
+        flag.close()
+        if c == 'on':
+            while True:
+                prefix = '/home/pi/new/'
+                start_time = time.time()
+                filename = '%s.jpg' % start_time
+                camera.capture(prefix + filename)
+                detectfilenamelist.append(filename)
+                timelist.append(start_time)
 
-            toreport(start_time, filename)
+                toreport(start_time, filename)
 
-            generatemarkdown()
-            if (start_time-timelist[0] > 60):
-                timelist.remove(0)
-                detectfilenamelist.remove(0)
-    time.sleep(5)
+                generatemarkdown()
+                if (start_time - timelist[0] > 60):
+                    timelist.remove(0)
+                    detectfilenamelist.remove(0)
+        time.sleep(5)
