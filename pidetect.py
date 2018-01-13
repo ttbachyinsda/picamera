@@ -13,21 +13,22 @@ reload(sys)
 sys.setdefaultencoding('utf8')
 lock = 0
 
-dburi = "mongodb://127.0.0.1:12345"
+dburi = "mongodb://127.0.0.1"
 client = pymongo.MongoClient(dburi)
 db = client["data"]
 facedatadb = db["facedata"]
 resultdb = db["resultdata"]
 
-if facedatadb.count() == 0:
-    facedatadb.insert_one({"token": 'FACE', "facename": 'GuoFangZe'})
-
+filetest = open('facedata.txt', 'w')
+fa = [('FACE', 'GuoFangZe')]
+filetest.write(json.dumps(fa))
+filetest.close()
 
 def getfacedata():
-    res = []
-    for element in facedatadb.find():
-        res.append(element)
-    return res
+    file1 = open('facedata.txt', 'r')
+    c = file1.read()
+    file1.close()
+    return json.loads(c)
 
 
 def toreport(start_time, filename):
@@ -39,7 +40,7 @@ def toreport(start_time, filename):
         prefix2 = '/home/pi/old/'
         shutil.copyfile(prefix1+filename, prefix2+filename)
         res = {'Face': [], 'Report': 'WrongFace', 'Filepath': filename, 'Time': start_time}
-        resultdb.insert_one(res)
+        print res, start_time, filename
     else:
         if random.random() > 0.8:
             facedata = getfacedata()
@@ -47,7 +48,16 @@ def toreport(start_time, filename):
             prefix2 = '/home/pi/old/'
             shutil.copyfile(prefix1 + filename, prefix2 + filename)
             res = {'Face': [facedata[0]], 'Report': 'RightFace', 'Filepath': filename, 'Time': start_time}
-            resultdb.insert_one(res)
+            print res, start_time, filename
+    if res != {}:
+        while lock == 1:
+            3+2
+        lock = 1
+        resultfile = open('result.txt', 'a')
+        resultfile.write(json.dumps(res))
+        resultfile.write('\n')
+        resultfile.close()
+        lock = 0
 
 
 def generatemarkdown():
@@ -59,7 +69,9 @@ def generatemarkdown():
     while lock == 1:
         3+2
     lock = 1
-    for st in resultdb.find().sort("Time", pymongo.ASCENDING):
+    resfile = open('result.txt', 'r')
+    for line in resfile.readlines():
+        st = json.loads(line.strip())
         if st['Face'] == []:
             filename = st['Filepath']
             shutil.copyfile(prefix2 + filename, './'+nowtime+'/'+filename)
