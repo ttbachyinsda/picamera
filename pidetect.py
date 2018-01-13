@@ -8,19 +8,26 @@ import random
 import json
 import zipfile
 import sys
+import pymongo
 reload(sys)
 sys.setdefaultencoding('utf8')
 lock = 0
 
-filetest = open('facedata.txt', 'w')
-fa = [('FACE', 'GuoFangZe')]
-filetest.write(json.dumps(fa))
-filetest.close()
+dburi = "mongodb://127.0.0.1"
+client = pymongo.MongoClient(dburi)
+db = client["data"]
+facedatadb = db["facedata"]
+resultdb = db["resultdata"]
+
+if facedatadb.count() == 0:
+    facedatadb.insert_one({"token": 'FACE', "facename": 'GuoFangZe'})
+
+
 def getfacedata():
-    file1 = open('facedata.txt', 'r')
-    c = file1.read()
-    file1.close()
-    return json.loads(c)
+    res = []
+    for element in facedatadb.find():
+        res.append(element)
+    return res
 
 
 def toreport(start_time, filename):
@@ -32,7 +39,7 @@ def toreport(start_time, filename):
         prefix2 = '/home/pi/old/'
         shutil.copyfile(prefix1+filename, prefix2+filename)
         res = {'Face': [], 'Report': 'WrongFace', 'Filepath': filename, 'Time': start_time}
-        print res, start_time, filename
+        resultdb.insert_one(res)
     else:
         if random.random() > 0.8:
             facedata = getfacedata()
@@ -40,16 +47,7 @@ def toreport(start_time, filename):
             prefix2 = '/home/pi/old/'
             shutil.copyfile(prefix1 + filename, prefix2 + filename)
             res = {'Face': [facedata[0]], 'Report': 'RightFace', 'Filepath': filename, 'Time': start_time}
-            print res, start_time, filename
-    if res != {}:
-        while lock == 1:
-            3+2
-        lock = 1
-        resultfile = open('result.txt', 'a')
-        resultfile.write(json.dumps(res))
-        resultfile.write('\n')
-        resultfile.close()
-        lock = 0
+            resultdb.insert_one(res)
 
 
 def generatemarkdown():
@@ -61,9 +59,7 @@ def generatemarkdown():
     while lock == 1:
         3+2
     lock = 1
-    resfile = open('result.txt', 'r')
-    for line in resfile.readlines():
-        st = json.loads(line.strip())
+    for st in resultdb.find().sort("Time", pymongo.ASCENDING):
         if st['Face'] == []:
             filename = st['Filepath']
             shutil.copyfile(prefix2 + filename, './'+nowtime+'/'+filename)
@@ -95,22 +91,16 @@ if __name__ == '__main__':
     detectfilenamelist = []
     timelist = []
     while True:
-        flag = open('flag.txt', 'r')
-        c = flag.read()
-        flag.close()
-        if c == 'on':
-            while True:
-                prefix = '/home/pi/new/'
-                start_time = time.time()
-                filename = '%s.jpg' % start_time
-                camera.capture(prefix + filename)
-                detectfilenamelist.append(filename)
-                timelist.append(start_time)
+        prefix = '/home/pi/new/'
+        start_time = time.time()
+        filename = '%s.jpg' % start_time
+        camera.capture(prefix + filename)
+        detectfilenamelist.append(filename)
+        timelist.append(start_time)
 
-                toreport(start_time, filename)
+        toreport(start_time, filename)
 
-                generatemarkdown()
-                if (start_time - timelist[0] > 60):
-                    timelist.remove(0)
-                    detectfilenamelist.remove(0)
-        time.sleep(5)
+        # generatemarkdown()
+        if (start_time - timelist[0] > 60):
+            timelist.remove(0)
+            detectfilenamelist.remove(0)
