@@ -99,6 +99,7 @@ if __name__ == '__main__':
     detectfilenamelist = []
     timelist = []
     while True:
+        time.sleep(1)
         prefix = '/home/pi/new/'
         start_time = time.time()
         filename = '%s.jpg' % start_time
