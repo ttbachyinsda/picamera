@@ -67,11 +67,9 @@ def generatemarkdown():
         if st['Face'] == []:
             filename = st['Filepath']
             shutil.copyfile(prefix2 + filename, './'+nowtime+'/'+filename)
-            print filename, markdownstr
             markdownstr = markdownstr + "未知人脸：!["+filename+"]("+filename+")\n\n"
         else:
             filename = st['Filepath']
-            print filename, markdownstr
             shutil.copyfile(prefix2 + filename, './' + nowtime + '/' + filename)
             markdownstr = markdownstr + "已知人脸："+ st['Face'][0][1]+"![" + filename + "](" + filename + ")\n\n"
     lock = 0
