@@ -50,14 +50,10 @@ def toreport(start_time, filename):
             res = {'Face': [facedata[0]], 'Report': 'RightFace', 'Filepath': filename, 'Time': start_time}
             print res, start_time, filename
     if res != {}:
-        while lock == 1:
-            3+2
-        lock = 1
         resultfile = open('result.txt', 'a')
         resultfile.write(json.dumps(res))
         resultfile.write('\n')
         resultfile.close()
-        lock = 0
 
 
 def generatemarkdown():
@@ -66,9 +62,6 @@ def generatemarkdown():
     nowtime = str(time.time())
     os.mkdir(nowtime)
     markdownstr = "###人脸检测报告\n\nBy ttbachyinsda\n\n"
-    while lock == 1:
-        3+2
-    lock = 1
     resfile = open('result.txt', 'r')
     for line in resfile.readlines():
         st = json.loads(line.strip())
@@ -80,7 +73,6 @@ def generatemarkdown():
             filename = st['Filepath']
             shutil.copyfile(prefix2 + filename, './' + nowtime + '/' + filename)
             markdownstr = markdownstr + "已知人脸："+ st['Face'][0][1]+"![" + filename + "](" + filename + ")\n\n"
-    lock = 0
 
     file1 = open("./"+nowtime+"/report.md", 'w')
     file1.write(markdownstr)
