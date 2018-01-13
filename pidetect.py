@@ -13,7 +13,7 @@ reload(sys)
 sys.setdefaultencoding('utf8')
 lock = 0
 
-dburi = "mongodb://127.0.0.1"
+dburi = "mongodb://127.0.0.1:12345"
 client = pymongo.MongoClient(dburi)
 db = client["data"]
 facedatadb = db["facedata"]
